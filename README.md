@@ -111,3 +111,88 @@ Follow the [Deployment documentation](https://next-auth.js.org/deployment)
 
 ISC
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Primero, debes instalar la biblioteca mysql en tu proyecto Next.js. Para hacer esto, abre una terminal en la carpeta de tu proyecto y ejecuta el siguiente comando:
+
+
+npm install mysql
+
+
+Luego, crea una conexión a la base de datos MySQL en tu archivo pages/api/ usando la biblioteca mysql. Aquí hay un ejemplo:
+
+
+import mysql from 'mysql';
+
+
+
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  database: 'database_name'
+});
+
+connection.connect();
+
+
+En este ejemplo, se crea una conexión a una base de datos MySQL en localhost con el nombre de usuario root, la contraseña password y el nombre de la base de datos database_name. La conexión se establece con la base de datos utilizando el método connect.
+
+A continuación, puedes realizar consultas a la base de datos utilizando la conexión que acabas de crear. Aquí hay un ejemplo:
+
+
+export default function handler(req, res) {
+  connection.query('SELECT * FROM table_name', (error, results, fields) => {
+    if (error) throw error;
+    res.status(200).json(results);
+  });
+}
+
+
+
+En este ejemplo, se crea un controlador de API que realiza una consulta a una tabla llamada table_name. La respuesta de la consulta se devuelve en formato JSON utilizando el método json de la respuesta res.
+
+Ahora puedes utilizar la API creada para obtener los datos de la base de datos MySQL en tu aplicación Next.js. Aquí hay un ejemplo:
+
+
+
+import { useEffect, useState } from 'react';
+
+export default function Home() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/data')
+      .then((response) => response.json())
+      .then((data) => setData(data));
+  }, []);
+
+  return (
+    <div>
+      {data.map((item) => (
+        <p key={item.id}>{item.name}</p>
+      ))}
+    </div>
+  );
+}
+
+
+
+En este ejemplo, se utiliza el método fetch para obtener los datos de la API que acabas de crear en el paso anterior. Los datos se almacenan en un estado utilizando el método useState. Luego, los datos se muestran en la página utilizando el método map.
